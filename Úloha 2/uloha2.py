@@ -1,7 +1,7 @@
 import os
 
 def compute(pp):
-    u = [1] * 30    # The stack (of fixed size)
+    u = [1]         # The u stack
     u1, u2 = 0, 0   # The u1 and u2 pointers
 
     # Repeat, until the pointer isn't bigger than the size of pp array
@@ -18,6 +18,11 @@ def compute(pp):
         elif command[0] == "M": # Move command
             value = int(command.split(" ")[1]) - 1
             u2, u1 = u1, value
+
+            # Resize the u list accordingly
+            if len(u) <= u1:
+                u = u + [1] * (u1 - len(u) + 1)
+
         elif command == "IN":   # The input command
             u[u1] = int(input("Input: "))
 
@@ -34,8 +39,8 @@ def compute(pp):
     print("U = "+str(u))
     print("U1 = "+str(u1)+", U2 = "+str(u2))
 
-# File name
-file_name = "2.2.txt"
+# File name with the program
+file_name = "2.3.txt"
 
 # Location of this file
 file_dir = os.path.dirname(os.path.realpath(__file__))
