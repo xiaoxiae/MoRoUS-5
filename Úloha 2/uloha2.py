@@ -1,3 +1,5 @@
+import os
+
 def compute(pp):
     u = [1] * 30    # The stack (of fixed size)
     u1, u2 = 0, 0   # The u1 and u2 pointers
@@ -32,13 +34,12 @@ def compute(pp):
     print("U = "+str(u))
     print("U1 = "+str(u1)+", U2 = "+str(u2))
 
-# Vypíše číslo 100
-pp = ["A", "A", "A", "M 2", "A", "A", "A", "M 2", "A", "A", "P"]
+# File name
+file_name = "2.2.txt"
 
-# Druhé mocniny
-#pp = ["IN", "M 2", "M 2", "A", "P", "M 3", "M 1", "S", "IF", "G 2"]
+# Location of this file
+file_dir = os.path.dirname(os.path.realpath(__file__))
 
-# Vypíše to větší ze dvou čísel
-#pp = ["IN", "M 2", "IN", "M 3", "M 3", "S", "M 4", "M 4", "S", "M 1", "M 3", "A", "M 2", "M 4", "A", "M 1", "IF", "G 24", "M 4", "P", "M 5", "M 5", "S", "M 2", "IF", "G 32", "M 3", "P", "M 5", "M 5", "S", "M 5", "IF", "G 36", "G 43", "M 6", "M 1", "S", "M 6", "M 2", "S", "G 16", "S"]
-
+# Read the contents of the file and run the code
+pp = open(os.path.join(file_dir, file_name)).read().splitlines()
 compute(pp)
