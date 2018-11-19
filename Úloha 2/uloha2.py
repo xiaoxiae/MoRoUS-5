@@ -24,7 +24,7 @@ def compute(pp):
                 u = u + [1] * (u1 - len(u) + 1)
 
         elif command == "IN":   # The input command
-            u[u1] = int(input("Input: "))
+            u[u1] = int(input(">>> "))
 
         # Stuff with moving the pointer
         if command[0] == "G":
