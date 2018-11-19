@@ -40,7 +40,7 @@ def compute(pp):
     print("U1 = "+str(u1)+", U2 = "+str(u2))
 
 # File name with the program
-file_name = "2.3.txt"
+file_name = input("Enter name of the file: ")
 
 # Location of this file
 file_dir = os.path.dirname(os.path.realpath(__file__))
