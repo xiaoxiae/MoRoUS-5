@@ -1,53 +1,38 @@
-def compute(pp):
-    u = [1] * (len(pp) + 1)
-    u1, u2 = 0, 0
-
-    # Repeat, until the pointer isn't bigger than the size of pp array
-    ppPointer = 0
-    while ppPointer < len(pp):
-        command = pp[ppPointer]
-
-        if command == "A":      # Addition command
-            u[u1] += u[u2]
-        elif command[0] == "M": # Move command
-            value = int(command.split(" ")[1]) - 1
-            u2, u1 = u1, value
-
-        ppPointer += 1
-
-        # Return prematurely if we reach over 100
-        if u[u1] > 100:
-            return None
-
-    return u[u1]
-
-def recursivepp(list, depth, increment):
+def recursivepp(depth, u, u1, u2, stack):
     """Recursively tries to find the best solution to problem 2.1."""
-    # If we reached the end and the result is 100, print it
+    # If were at depth 0, we return (or potentially save the list)
     if depth == 0:
-        if compute(list) == 100:
+        # If the sum is 100 and the last command isn't M
+        if u[u1] == 100 and stack[-1][0] != "M":
             f = open("uloha2.1.txt", "a")
-            f.write(str(len(list))+": "+str(list)+"\n")
+            f.write(str(len(stack))+": "+str(stack)+"\n")
         return
 
-    # Add the A command
-    list[len(list) - depth] = "A"
-    recursivepp(list, depth - 1, increment)
+    # ADD command
+    temp = u[u1]
+    u[u1] += u[u2]
+    stack.append("A")
+    recursivepp(depth - 1, u, u1, u2, stack)
+    stack.pop()
+    u[u1] = temp
 
-    # Add m command and increment the increment
-    list[len(list) - depth] = "M "+str(increment)
-    recursivepp(list, depth - 1, increment + 1)
+    # MOVE command (to itself)
+    stack.append("M "+str(u1 + 1))
+    recursivepp(depth - 1, u, u1, u1, stack)
+    stack.pop()
 
-    # Add m command and leave the increment alone
-    list[len(list) - depth] = "M "+str(increment)
-    recursivepp(list, depth - 1, increment)
+    # MOVE command (forward)
+    stack.append("M "+str(u1 + 2))
+    recursivepp(depth - 1, u, u1 + 1, u1, stack)
+    stack.pop()
 
-    # Add m command and decrement the increment (if we can)
-    if increment >= 2:
-        list[len(list) - depth] = "M "+str(increment)
-        recursivepp(list, depth - 1, increment - 1)
+    # MOVE command (backward, only if we can)
+    if u1 != 0:
+        stack.append("M "+str(u1 ))
+        recursivepp(depth - 1, u, u1 - 1, u1, stack)
+        stack.pop()
 
 i = 1
 while True:
-    recursivepp([0] * i, i, 2)
+    recursivepp(i, [1] * (i + 1), 0, 0, [])
     i += 1
