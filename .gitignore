@@ -1,0 +1,16 @@
+## Tex file outputs
+*.aux
+*.fdb_latexmk
+*.fls
+*.gz
+*.log
+*.pdf
+*.synctex.gz
+*.bbl
+*.blg
+
+## Python Cache folders
+__pycache__/
+
+## Xournal files
+*.xoj
