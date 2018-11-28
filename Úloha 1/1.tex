@@ -1,0 +1,36 @@
+\documentclass[a4paper, 12pt]{article}
+
+\usepackage{amsmath}
+\usepackage[total={17cm,25cm}, top=2.5cm, left=2cm, includefoot]{geometry}
+\usepackage{enumitem}
+\usepackage[T1]{fontenc}
+
+\setlist[itemize]{topsep=0pt}
+\setlength{\itemindent}{0cm}
+\setlength{\parskip}{9pt}
+\setlength\parindent{0pt}
+
+\begin{document}
+  \section*{Úloha č. 1: Skladiště}
+
+  \subsection*{Úkol 1.1}
+  Řešením tohoto problému jsou chodby mezi každými dvěma po sobě jdoucími souřadnicemi z následujícího výčtu:
+
+  \begin{center}
+    $B3, B2, C2, C3, D3, E3, E4, D4, D5, E5$
+  \end{center}
+
+  \subsection*{Úkol 1.2}
+  Řešením je z bodu $*$ (z konce) procházet skladiště tak, že nestoupíme mimo vyznačené body a při vstupu na každé pole s hodnotou senzoru $s$ zkontrolujeme, zda $|(t_d - p) - s| \le 5$ (kde $p$ je délka námi uražené cesty). Pokud dorazíme na začátek, cestou projdeme přes všechny senzory a navíc je délka námi uražené cesty rovna času, pak cestu vypíšeme.
+
+  Řešení je implementováno v jazyce Python v souboru \textit{1.1.py}.
+
+  \subsection*{Úkol 1.3}
+  Řešením tohoto problému jsou chodby mezi každými dvěma po sobě jdoucími souřadnicemi z následujících výčtů:
+
+  \begin{center}
+    $B3, B2, C2, D2, E2, E3, D3, D4, E4$
+
+    $B3, C3, C2, D2, E2, E3, D3, D4, E4$
+  \end{center}
+\end{document}
