@@ -175,6 +175,30 @@ class WordCorrector(QWidget):
             self.wordNumber = 0
             self.sentenceNumber += 1
 
+        # If everything has been corrected
+        self.endOfCorrections()
+
+
+    def endOfCorrections(self):
+        """Is called after the entirety of the text is corrected."""
+        # Disables textbox
+        self.textbox.setReadOnly(True)
+        self.textbox.clear()
+
+        # Disable all buttons
+        self.includeButton.setEnabled(False)
+        self.excludeButton.setEnabled(False)
+        self.correctButton.setEnabled(False)
+
+        self.wordLabel.setText("<b>Done!</b> All words have been corrected.")
+        self.setPercentageLabel()
+
+        # Write the corrected sentences to a file
+        output_file = codecs.open("corrected_messages.txt", "w", encoding='utf8')
+
+        for sentence in self.sentences:
+            output_file.write(str(" ".join(sentence))+"\n")
+
 
     def setWordLabel(self, word, sentence):
         """Set the word label to the current sentence, with the word to be
