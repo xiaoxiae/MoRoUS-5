@@ -14,7 +14,7 @@ latest_date = datetime.strptime('Jan 1 2017', '%b %d %Y')
 
 # Regexes to split text into words and to find unwanted text
 word_split_regex = re.compile("[^a-zA-ZĚŠČŘŽÝÁÍÉÓŇĎŤŮÚěščřžýáíéóňďťůú]+")
-url_regex = "^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$"
+url_regex = "((http|ftp|https):\/\/)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}([-a-zA-Z0-9@:%_\+.~#?&\/=]*)"
 email_regex = "[A-Za-z0-9._-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}"
 
 # Filter applied on each of the words (the "d" and "p" are ":P" and ":D")
