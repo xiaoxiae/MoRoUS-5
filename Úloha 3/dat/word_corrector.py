@@ -165,29 +165,14 @@ class WordCorrector(QWidget):
         """Set the word label to the current sentence, with the word to be
         corrected highlighted in bold."""
 
-        prettySentence = ""
+        # Create a copy of the sentence to play around with
+        adjustedSentence = list(sentence)
 
-        # TODO: Fix the shortening of the sentence
-        """
-        wordLocation = sentence.index(word)
-        shortenedSentence = sentence
+        # Bolden the word that we are correcting
+        highlighted_word = "<b>" + adjustedSentence[self.wordNumber] + "</b>"
+        adjustedSentence[self.wordNumber] = highlighted_word
 
-        # If the sentence is too long, shorten it (to focus on the context of the word)
-        if len(sentence) > 16:
-            if wordLocation < 8:
-                shortenedSentence = sentence[0:16]
-            else:
-                shortenedSentence = sentence[wordLocation - 8: wordLocation + 8]
-        """
-
-        for w in sentence:
-            # Highlight our word in the sentence
-            if w == word:
-                prettySentence += "<b>"+w+"</b> "
-            else:
-                prettySentence += w + " "
-
-        self.wordLabel.setText(prettySentence.strip())
+        self.wordLabel.setText(' '.join(adjustedSentence))
 
 
     def setPercentageLabel(self):
