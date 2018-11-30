@@ -106,24 +106,28 @@ class WordCorrector(QWidget):
             while self.wordNumber < len(sentence):
                 word = sentence[self.wordNumber]
 
-                # Where the word would be inserted if it was in the dicts
+                # Where the word would be inserted into the dictionaries
                 cz_i = bisect_left(self.cz_dict, word)
                 en_i = bisect_left(self.en_dict, word)
 
                 # If the word has already replaced been or is in english, skip it
-                if word == "-" or (len(self.en_dict) > en_i and self.en_dict[en_i] == word):
+                if word == "-" :
                     self.wordNumber += 1
                     continue
 
-                # If the word isn't in the list
+                # If the word isn't a recognized czech word
                 if len(self.cz_dict) <= cz_i or self.cz_dict[cz_i] != word:
+                    # If the word english, replace it with "-" and continue
+                    if len(self.en_dict) > en_i and self.en_dict[en_i] == word:
+                        self.sentences[self.sentenceNumber][self.wordNumber] = "-"
+                        continue
 
                     # If the same correction has already been made, correct it and continue
                     if word in self.corrections:
                         self.sentences[self.sentenceNumber][self.wordNumber] = self.corrections[word]
                         continue
 
-                    # Else set it to the word and continue
+                    # Else set the word label accordingly and return
                     self.setWordLabel(word, sentence)
                     return
 
