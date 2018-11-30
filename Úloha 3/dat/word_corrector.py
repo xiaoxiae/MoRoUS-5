@@ -19,7 +19,8 @@ class WordCorrector(QWidget):
 
         # Perecentage of the text corrected
         self.percentageLabel = QLabel(self,
-            alignment = Qt.AlignRight)
+            alignment = Qt.AlignRight,
+            toolTip = "Shows the percentage of the sentences corrected.")
 
         # Words to be corrected
         self.wordLabel = QLabel(self,
@@ -27,29 +28,34 @@ class WordCorrector(QWidget):
             alignment = Qt.AlignCenter,
             wordWrap = True,
             sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred))
+            toolTip = "Displays the sentence with the highlighted word to be corrected.")
 
         # BUTTON CREATION
         self.startButton = QPushButton(self,
             text = "Start",
-            clicked = self.start)
+            clicked = self.start,
+            toolTip = "Starts the correction process.")
 
         self.includeButton = QPushButton(self,
             text = "Include",
             styleSheet = 'QPushButton {color: green;}',
             enabled=False,
-            clicked = self.include)
+            clicked = self.include,
+            toolTip = "Sets the currently highlighted word (and all its future occurences) as correct.")
 
         self.excludeButton = QPushButton(self,
             text = "Exclude",
             styleSheet = 'QPushButton {color: red;}',
             enabled=False,
-            clicked = self.exclude)
+            clicked = self.exclude,
+            toolTip = "Replaces the word and all of it's future occurences with '-'.")
 
         self.correctButton = QPushButton(self,
             text = "Adjust",
             styleSheet = 'QPushButton {color: blue;}',
             enabled=False,
-            clicked = self.adjust)
+            clicked = self.adjust,
+            toolTip = "Sets the currently highlighted word (and all its future occurences) to whatever is currently written in the textbox.")
 
         # Word textbox
         self.textbox = QLineEdit(self,
