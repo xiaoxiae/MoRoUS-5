@@ -59,7 +59,7 @@ class WordCorrector(QWidget):
 
         # Word textbox
         self.textbox = QLineEdit(self,
-            returnPressed = self.correctButton.click,
+            returnPressed = self.adjust,
             textChanged = self.textboxTextChanged)
 
         # LAYOUT SETUP
@@ -225,10 +225,14 @@ class WordCorrector(QWidget):
         """Set the correction of the word to whatever is in the textbox and
         run goThroughMessages."""
 
+        # If there is nothing to adjust, return
+        if self.wordLabel.text() == "":
+            return
+
         self.textbox.clear()
 
         # Get the word and it's correction
-        wordCorrection = self.textbox.text()
+        wordCorrection = self.textbox.text().strip()
         word = self.sentences[self.sentenceNumber][self.wordNumber]
 
         # If called on an empty textbox, include the word in the dictionary
