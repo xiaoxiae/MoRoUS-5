@@ -12,13 +12,14 @@ name = "Tomáš Sláma"
 # The latest accepted message date
 latest_date = datetime.strptime('Jan 1 2017', '%b %d %Y')
 
-# Regexes to split text into words and to find unwanted text
-word_split_regex = re.compile("[^a-zA-ZĚŠČŘŽÝÁÍÉÓŇĎŤŮÚěščřžýáíéóňďťůú]+")
+# Regexes to split text
+word_split_regex = re.compile("[^a-zA-ZĚŠČŘŽÝÁÍÉÓŇĎŤŮÚěščřžýáíéóňďťůú,]+")
+sentence_split_regex = re.compile(" *\. *")
+smiley_face_regex = "((?::|;|=)(?:-)?(?:\)|D|P))"
+
+# Regexes to find unwanted text
 url_regex = "((http|ftp|https):\/\/)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}([-a-zA-Z0-9@:%_\+.~#?&\/=]*)"
 email_regex = "[A-Za-z0-9._-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}"
-
-# Filter applied on each of the words (the "d" and "p" are ":P" and ":D")
-word_filter = lambda word: len(word) != 0 and word != "p" and word != "d"
 
 # Create a file to write to
 output_file = codecs.open("messages.txt", "w", encoding='utf8')
@@ -52,14 +53,21 @@ for path, dirs, files in os.walk('.'):
                         if re.search(url_regex, content) or re.search(email_regex, content):
                             continue
 
+                        # Remove emojis
+                        content = re.sub(smiley_face_regex, "", content)
+
                         # If the name and date are correct
                         if sender_name == name and message_date > latest_date:
-                            # Split each of the words, filter them and write them to file
-                            words = [word.lower() for word in word_split_regex.split(content)]
-                            filtered_words = list(filter(word_filter, words))
+                            # Split each message on sentences
+                            for sentence in sentence_split_regex.split(content):
+                                # Split each of the sentences into words
+                                words = [word.lower() for word in word_split_regex.split(sentence)]
 
-                            # If there are words to print, print them
-                            if len(filtered_words) != 0:
-                                output_file.write(str(" ".join(filtered_words))+"\n")
+                                # Filter out words that have length 0
+                                filtered_words = list(filter(lambda word: len(word) != 0, words))
+
+                                # If there are words to print, print them
+                                if len(filtered_words) != 0:
+                                    output_file.write(str(" ".join(filtered_words))+"\n")
                     except KeyError:
                         pass
