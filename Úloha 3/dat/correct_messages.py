@@ -6,7 +6,7 @@ import sys
 
 # TODO: Add comments to the uncommented methods
 
-class WordCorrector(QWidget):
+class CorrectMessages(QWidget):
     def __init__(self, *args, **kwargs):
         """Inicializace prvků aplikace."""
         super().__init__(*args, **kwargs)
@@ -15,7 +15,7 @@ class WordCorrector(QWidget):
         self.headingLabel = QLabel(self,
             alignment = Qt.AlignCenter,
             text = "<h3>Word Corrector</h3>",
-            sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred))
+            sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed))
 
         # Perecentage of the text corrected
         self.percentageLabel = QLabel(self,
@@ -24,10 +24,9 @@ class WordCorrector(QWidget):
 
         # Words to be corrected
         self.wordLabel = QLabel(self,
-            text = "Press <b>Start</b> to begin.",
             alignment = Qt.AlignCenter,
             wordWrap = True,
-            sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred))
+            sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum),
             toolTip = "Displays the sentence with the highlighted word to be corrected.")
 
         # BUTTON CREATION
@@ -211,7 +210,20 @@ class WordCorrector(QWidget):
         highlighted_word = "<b>" + adjustedSentence[self.wordNumber] + "</b>"
         adjustedSentence[self.wordNumber] = highlighted_word
 
-        self.wordLabel.setText(' '.join(adjustedSentence))
+        # Adjust the sentence so there is never more than 16 words in total
+        maxSentenceLength = 16
+        if len(adjustedSentence) <= maxSentenceLength:
+            self.wordLabel.setText(' '.join(adjustedSentence))
+        else:
+            start = self.wordNumber - 8
+            end = self.wordNumber + 8
+
+            if start < 0:
+                self.wordLabel.setText(' '.join(adjustedSentence[:16]))
+            elif end > len(adjustedSentence):
+                self.wordLabel.setText(' '.join(adjustedSentence[-16:]))
+            else:
+                self.wordLabel.setText(' '.join(adjustedSentence[start:end]))
 
 
     def setPercentageLabel(self):
@@ -271,5 +283,5 @@ class WordCorrector(QWidget):
 
 # Run the app
 app = QApplication(sys.argv)
-wordCorrector = WordCorrector()
+correctMessages = CorrectMessages()
 app.exec()

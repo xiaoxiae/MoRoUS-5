@@ -1,4 +1,4 @@
-"""A script to generate words from facebook JSON files (with restrictions)."""
+"""A script to generate words from Facebook JSON files (with restrictions)."""
 import json
 import os
 import re
@@ -23,10 +23,11 @@ word_filter = lambda word: len(word) != 0 and word != "p" and word != "d"
 # Create a file to write to
 output_file = codecs.open("messages.txt", "w", encoding='utf8')
 
-# Find all non-json files (and non-py files) and remove them
+# Take a walk through all subdirectories
 for path, dirs, files in os.walk('.'):
     for input_file in files:
 
+        # For all JSON files:
         if input_file.endswith('.json'):
             file_path = os.path.join(path, input_file)
 
