@@ -59,7 +59,8 @@ class WordCorrector(QWidget):
 
         # Word textbox
         self.textbox = QLineEdit(self,
-            returnPressed = self.correctButton.click)
+            returnPressed = self.correctButton.click,
+            textChanged = self.textboxTextChanged)
 
         # LAYOUT SETUP
         self.mainVLayout = QVBoxLayout(self)
@@ -91,10 +92,18 @@ class WordCorrector(QWidget):
         self.show()
 
 
+    def textboxTextChanged(self, text):
+        """Set correctButton to enabled or disabled based on whether the textbox
+        isn't empty."""
+        if len(text.strip()) != 0:
+            self.correctButton.setEnabled(True)
+        else:
+            self.correctButton.setEnabled(False)
+
+
     def start(self):
         # Disable/enable the appropriate buttons
         self.startButton.setEnabled(False)
-        self.correctButton.setEnabled(True)
         self.includeButton.setEnabled(True)
         self.excludeButton.setEnabled(True)
 
