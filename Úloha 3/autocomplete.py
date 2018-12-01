@@ -15,21 +15,19 @@ class Autocomplete(QWidget):
             text = "<h3>Autocomplete</h3>",
             alignment = Qt.AlignCenter)
 
-        self.informationLabel = QLabel(self,
-            alignment = Qt.AlignCenter)
-
         self.textbox = QLineEdit(self,
             textChanged = self.textboxChanged)
 
-        self.suggestionLabel = QLabel(self,
-            alignment = Qt.AlignCenter)
+        self.predictionLabel = QLabel(self,
+            alignment = Qt.AlignCenter,
+            styleSheet = 'color: grey')
 
         # ROZLOŽENÍ OVLÁDACÍCH PRVKŮ
         self.layout = QVBoxLayout(self)
 
         self.layout.addWidget(self.headingLabel)
         self.layout.addWidget(self.textbox)
-        self.layout.addWidget(self.informationLabel)
+        self.layout.addWidget(self.predictionLabel)
 
         # Generates the trie from the messages.txt file
         self.generateTrie()
@@ -38,6 +36,9 @@ class Autocomplete(QWidget):
         list = []
         self.getTrieWords(self.trie, "", list)
         self.allWords = set(word[0] for word in list)
+
+        # The number of recommendations to make
+        self.rNumber = 5
 
         # Show the layout
         self.setLayout(self.layout)
@@ -125,7 +126,7 @@ class Autocomplete(QWidget):
         """Funkce volána s každou změnou textboxu."""
         # If there textbox is empty, no predictions will be made
         if len(text) == 0:
-            self.informationLabel.setText("")
+            self.predictionLabel.setText("")
             return
 
         # Match the last word
@@ -152,9 +153,8 @@ class Autocomplete(QWidget):
                     self.getTrieWords(trieBranch[character][2], "", list)
 
                     # Recommend the top few to the user
-                    sortedList = sorted(list, key=lambda x:x[1], reverse=True)
-                    predictions = " ".join(word[0] for word in sortedList[0:5])
-                    self.informationLabel.setText(predictions)
+                    predictions = sorted(list, key=lambda x:x[1], reverse=True)
+                    self.setPredictionLabel(predictions)
                     return
 
                 trieBranch = trieBranch[character][0]
@@ -166,17 +166,19 @@ class Autocomplete(QWidget):
             if letter in trieBranch:
                 trieBranch = trieBranch[letter][0]
             else:
-                correction = self.getWordCorrections(word)
-                predictions = " ".join([word[0] for word in correction[0:5]])
-                self.informationLabel.setText(predictions)
+                corrections = self.getWordCorrections(word)
+                self.setPredictionLabel(corrections)
                 return
 
         # Get all of the possible words from the trie
         predictions = self.getPredictionsFromTrie(trieBranch, word)
+        self.setPredictionLabel(predictions)
 
-        # Set the information label as the first 5 recommendations
-        predictionString = " ".join([word[0] for word in predictions[0:5]])
-        self.informationLabel.setText(predictionString)
+
+    def setPredictionLabel(self, predictions):
+        """Sets the predictionLabel to the first few predictions."""
+        predictionString = "  ".join([w[0] for w in predictions[:self.rNumber]])
+        self.predictionLabel.setText(predictionString)
 
 
     def getWordCorrections(self, word):
