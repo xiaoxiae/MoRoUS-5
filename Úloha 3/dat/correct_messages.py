@@ -144,6 +144,9 @@ class CorrectMessages(QWidget):
         while self.sentenceNumber < len(self.sentences):
             sentence = self.sentences[self.sentenceNumber]
 
+            # Count the percentage of english and czech words in the sentence
+            englishWordNumber = 0
+
             # Go through the words of the sentence
             while self.wordNumber < len(sentence):
                 word = sentence[self.wordNumber]
@@ -152,21 +155,25 @@ class CorrectMessages(QWidget):
                 cz_i = bisect_left(self.cz_dict, word)
                 en_i = bisect_left(self.en_dict, word)
 
-                # If the word has already replaced been or is in english, skip it
+                # If the word has already replaced, skip it
                 if word == "-" :
                     self.wordNumber += 1
                     continue
 
-                # If the word isn't a recognized czech word
-                if len(self.cz_dict) <= cz_i or self.cz_dict[cz_i] != word:
-                    # If the word english, replace it with "-" and continue
-                    if len(self.en_dict) > en_i and self.en_dict[en_i] == word:
-                        self.sentences[self.sentenceNumber][self.wordNumber] = "-"
-                        continue
+                # If the word is in english, increment the englishWordNumber variable
+                if len(self.en_dict) > en_i and self.en_dict[en_i] == word:
+                    englishWordNumber += 1
 
-                    # If the same correction has already been made, correct it and continue
+                # If the word isn't in the czech dictionary
+                if len(self.cz_dict) <= cz_i or self.cz_dict[cz_i] != word:
+                    # If the same correction has already been made, do it again
                     if word in self.corrections:
                         self.sentences[self.sentenceNumber][self.wordNumber] = self.corrections[word]
+                        continue
+
+                    # If the word is not czech and is english, set it to "-"
+                    if len(self.en_dict) > en_i and self.en_dict[en_i] == word:
+                        self.sentences[self.sentenceNumber][self.wordNumber] = "-"
                         continue
 
                     # Else set the word label accordingly and return
@@ -178,8 +185,13 @@ class CorrectMessages(QWidget):
 
                 self.wordNumber += 1
 
+            # If a percentage of words are in english, remove the sentence
+            if englishWordNumber / len(sentence) > 0.8:
+                del(self.sentences[self.sentenceNumber])
+            else:
+                self.sentenceNumber += 1
+
             self.wordNumber = 0
-            self.sentenceNumber += 1
 
         # If everything has been corrected
         self.endOfCorrections()
