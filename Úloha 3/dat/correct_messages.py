@@ -4,7 +4,6 @@ import codecs
 from bisect import bisect_left
 import sys
 
-# TODO: Add comments to the uncommented methods
 
 class CorrectMessages(QWidget):
     def __init__(self, *args, **kwargs):
@@ -56,6 +55,13 @@ class CorrectMessages(QWidget):
             clicked = self.adjust,
             toolTip = "Sets the currently highlighted word (and all its future occurences) to whatever is currently written in the textbox.")
 
+        self.deleteSentenceButton = QPushButton(self,
+            text = "Delete sentence",
+            styleSheet = 'QPushButton {color: red;}',
+            enabled=False,
+            clicked = self.deleteCurrentSentence,
+            toolTip = "Deletes the sentence that the highlighted word is in. Note that future sentences with this word will NOT be deleted.")
+
         # Word textbox
         self.textbox = QLineEdit(self,
             returnPressed = self.adjust,
@@ -85,6 +91,7 @@ class CorrectMessages(QWidget):
         self.mainVLayout.addLayout(self.centerHLayout)
         self.mainVLayout.addWidget(self.wordLabel)
         self.mainVLayout.addLayout(self.buttonHLayout)
+        self.mainVLayout.addWidget(self.deleteSentenceButton)
 
         # Show the main layout
         self.setLayout(self.mainVLayout)
@@ -101,10 +108,12 @@ class CorrectMessages(QWidget):
 
 
     def start(self):
+        """Starts the entire word correction process."""
         # Disable/enable the appropriate buttons
         self.startButton.setEnabled(False)
         self.includeButton.setEnabled(True)
         self.excludeButton.setEnabled(True)
+        self.deleteSentenceButton.setEnabled(True)
 
         # Load the dictionaries
         cz_dict_file = codecs.open("dictionaries/czech.dic", "r", encoding="utf-8")
@@ -207,6 +216,7 @@ class CorrectMessages(QWidget):
         self.includeButton.setEnabled(False)
         self.excludeButton.setEnabled(False)
         self.correctButton.setEnabled(False)
+        self.deleteSentenceButton.setEnabled(False)
 
         self.wordLabel.setText("<b>Done!</b> All words have been corrected.")
         self.setPercentageLabel()
@@ -296,6 +306,15 @@ class CorrectMessages(QWidget):
         self.addWordToDictionary(wordCorrection)
 
         self.goThroughMessages()
+
+
+    def deleteCurrentSentence(self):
+        """Deletes the currently selected sentence and runs
+        goThroughMessages."""
+        del(self.sentences[self.sentenceNumber])
+
+        self.goThroughMessages()
+
 
 # Run the app
 app = QApplication(sys.argv)
