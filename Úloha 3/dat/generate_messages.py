@@ -13,7 +13,7 @@ name = "Tomáš Sláma"
 latest_date = datetime.strptime('Jan 1 2017', '%b %d %Y')
 
 # Regexes to split text
-word_split_regex = re.compile("[^a-zA-ZĚŠČŘŽÝÁÍÉÓŇĎŤŮÚěščřžýáíéóňďťůú,]+")
+word_split_regex = re.compile("[^a-zA-ZĚŠČŘŽÝÁÍÉÓŇĎŤŮÚěščřžýáíéóňďťůú]+")
 sentence_split_regex = re.compile(" *\. *")
 smiley_face_regex = "((?::|;|=)(?:-)?(?:\)|D|P))"
 
