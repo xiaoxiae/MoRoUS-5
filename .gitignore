@@ -8,9 +8,15 @@
 *.synctex.gz
 *.bbl
 *.blg
+*.out
 
 ## Python Cache folders
 __pycache__/
 
 ## Xournal files
 *.xoj
+
+## Ignore my Facebook messages
+# Ignores both the exported .txt file and the raw JSON files
+**/dat/*.txt
+**/dat/messages/*
