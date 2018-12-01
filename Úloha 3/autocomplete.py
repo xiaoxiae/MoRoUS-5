@@ -66,31 +66,68 @@ class Autocomplete(QWidget):
         """Generates a trie from the dat/messages.txt file"""
         self.trie = {}
 
-        # Read lines of the file one by one
         with codecs.open("dat/corrected_messages.txt", encoding="UTF-8") as f:
-            for line in f:
+            for sentence in f:
 
-                for word in line.strip().split(" "):
-                    trieBranch = self.trie
+                # Get each of the words of the sentence and iterate over them
+                words = sentence.strip().split(" ")
+                for i in range(len(words)):
+                    word = words[i]
 
-                    # Go through all the characters
-                    for i in range(len(word)):
-                        character = word[i]
+                    if word == "-":
+                        continue
 
-                        # If this character is not in a trie, add it
-                        if character not in trieBranch:
-                            trieBranch[character] = [{}, 0]
+                    # Add each of the words to trie
+                    self.addWordToTrie(self.trie, word)
 
-                        # If we are at the end of the word, increment frequency
-                        if i == len(word) - 1:
-                            trieBranch[character][1] += 1
+                    # If there is a word that follows this one
+                    if i < len(words) - 1 and words[i + 1] != "-":
+                        followingWord = words[i + 1]
 
-                        # Go further into the branch
-                        trieBranch = trieBranch[character][0]
+                        # Traverse the till the very last branch
+                        trieBranch = self.trie
+                        for i in range(len(word)):
+                            character = word[i]
+
+                            # Add a new trie with the word that follow this one
+                            if i == len(word) - 1:
+
+                                if len(trieBranch[character]) != 3:
+                                    trieBranch[character].append({})
+
+                                # Create a new trie with the word
+                                self.addWordToTrie(trieBranch[character][2], followingWord)
+
+                            trieBranch = trieBranch[character][0]
+
+
+    def addWordToTrie(self, trie, word):
+        """Adds a word to a trie."""
+        trieBranch = trie
+
+        # Go through all the characters of the word
+        for i in range(len(word)):
+            character = word[i]
+
+            # If this character is not in a trie, add it
+            if character not in trieBranch:
+                trieBranch[character] = [{}, 0]
+
+            # If we are at the end of the word, increment frequency
+            if i == len(word) - 1:
+                trieBranch[character][1] += 1
+
+            # Go further into the branch
+            trieBranch = trieBranch[character][0]
 
 
     def textboxChanged(self, text):
         """Funkce volána s každou změnou textboxu."""
+        # If there textbox is empty, no predictions will be made
+        if len(text) == 0:
+            self.informationLabel.setText("")
+            return
+
         # Match the last word
         regex = "\s*([a-zěščřžýáíéóňďťůú]+)$"
         wordSeach = re.search(regex, text.strip())
@@ -98,8 +135,29 @@ class Autocomplete(QWidget):
         # If there is no word, return
         if wordSeach == None:
             return
-
         word = wordSeach.group(0).strip()
+
+        # If the word is in trie, recommend its connections
+        if self.trieWordValue(word):
+
+            # Traverse till we can
+            trieBranch = self.trie
+            for i in range(len(word)):
+                character = word[i]
+
+                # If we're at the last trie branch and the word has connections
+                if i == len(word) - 1 and len(trieBranch[character]) == 3:
+                    # Get its connections
+                    list = []
+                    self.getTrieWords(trieBranch[character][2], "", list)
+
+                    # Recommend the top few to the user
+                    sortedList = sorted(list, key=lambda x:x[1], reverse=True)
+                    predictions = " ".join(word[0] for word in sortedList[0:5])
+                    self.informationLabel.setText(predictions)
+                    return
+
+                trieBranch = trieBranch[character][0]
 
         # Traverse the trie
         trieBranch = self.trie
