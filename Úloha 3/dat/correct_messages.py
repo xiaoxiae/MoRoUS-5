@@ -130,6 +130,13 @@ class CorrectMessages(QWidget):
         self.goThroughMessages()
 
 
+    def addWordToDictionary(self, word):
+        """Adds a word to the czech dictionary."""
+        # Find the position of where it should be and add it there
+        cz_i = bisect_left(self.cz_dict, word)
+        self.cz_dict.insert(cz_i, word)
+
+
     def goThroughMessages(self):
         """Goes through the words in the sentence list and stops when it
         reaches one that needs to be corrected."""
@@ -240,11 +247,7 @@ class CorrectMessages(QWidget):
         """Add the current word to the czech dictionary and run
          goThroughMessages."""
 
-        word = self.sentences[self.sentenceNumber][self.wordNumber]
-
-        # Find the position of where it should be and add it there
-        cz_i = bisect_left(self.cz_dict, word)
-        self.cz_dict.insert(cz_i, word)
+        self.addWordToDictionary(self.sentences[self.sentenceNumber][self.wordNumber])
 
         self.goThroughMessages()
 
@@ -265,8 +268,6 @@ class CorrectMessages(QWidget):
         if self.wordLabel.text() == "":
             return
 
-        self.textbox.clear()
-
         # Get the word and it's correction
         wordCorrection = self.textbox.text().strip()
         word = self.sentences[self.sentenceNumber][self.wordNumber]
@@ -276,8 +277,11 @@ class CorrectMessages(QWidget):
             self.include()
             return
 
-        # Add the correction for the future
+        self.textbox.clear()
+
+        # Add the correction to corrections and also to the dictionary
         self.corrections[word] = wordCorrection
+        self.addWordToDictionary(wordCorrection)
 
         self.goThroughMessages()
 
