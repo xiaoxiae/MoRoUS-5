@@ -1,0 +1,73 @@
+\documentclass[a4paper, 12pt]{article}
+
+\usepackage{amsmath}
+\usepackage[total={17cm,25cm}, top=2.5cm, left=2cm, includefoot]{geometry}
+\usepackage{enumitem}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{graphicx}
+
+\setlist[itemize]{topsep=0pt}
+\setlength{\itemindent}{0cm}
+\setlength{\parskip}{9pt}
+\setlength\parindent{0pt}
+
+\begin{document}
+  \section{Témátko č. 1: Konec zdlouhavému psaní zpráv?}
+
+  \subsection{Získání dat uživatele}
+  První krok k personalizovanému nabízení slov je zpracování dat uživatele. Data jsou v našem případě věty a slova, které uživatel napsal. Kde však seženeme dostatečně velké množství gramaticky správných dat, aby se systém mohl učit?
+
+  Jedna možnost je vytvořit systém tak, aby zpracovával data okamžitě po jejich napsání a učil se tak "za běhu". Variací tohoto systému existuje v dnešním světě řada, primárně na mobilních zařízeních. Nevýhoda však vězí v tom, že zpočátku se jedná o systém velice hloupý a až při jeho dlouhodobějším používání se z něj stává něco použitelného.
+
+  Pokud chceme vybudovat systém, jehož účinek bude okamžitý, musíme tedy k problému přistoupit trochu jinak. Použijeme data ze \textbf{sociálních médií.}
+
+  V dnešní době drtivá většina z nás používá nějakou formu sociálních médií a naštěstí pro nás je získání těchto dat z většiny populárnějších služeb jednoduché:
+  \begin{itemize}
+    \item \textbf{Facebook:} Po přihlášení na Facebook je v \href{https://www.facebook.com/settings?tab=your_facebook_information}{Nastavení} pod záložkou \href{https://www.facebook.com/settings?tab=your_facebook_information}{Vaše informace na facebooku} možnost Stažení vašich informací.
+    \item \textbf{Gmail:} Stačí navštívit \href{https://takeout.google.com/}{Google Takeout} a z produktů ke stažení vybrat Gmail.
+    \item \textbf{Instagram:} V nastavení v sekci \href{https://www.instagram.com/download/request/}{Soukromí a Bezpečnost} si lze data vyžádat po kliknutí na podsekci Stažení dat.
+  \end{itemize}
+
+  \subsection{Zpracování dat z Facebooku}
+  V mém případě byla nejlepší volba Facebook, jelikož službu Messenger již několik let aktivně používám.
+
+  Ve složce \textit{dat} je tedy několik scriptů na zpracování dat z Facebooku. Po umístění stažených zpráv z Facebooku do této složky pod jménem \textit{messages} dělají scripty na zpracování dat následující:
+  \begin{itemize}
+    \item \textit{clean\_facebook\_data.py}: odstraní nepotřebné soubory (fotky, videa...) a prázdné adresáře z adresáře \textit{dat/messages} a všech jeho podadresářů.
+    \item \textit{generate\_messages.py}: vygeneruje zprávy daného uživatele v určeném časovém intervalu ze všech JSON souborů adresáře \textit{dat/messages} a všech jeho podadresářů.
+  \end{itemize}
+
+  I přes to, že máme zprávy stažené může nastat problém gramatických chyb, díky kterým budou naše data vadná. Tento problém řeší aplikace \textit{correct\_messages.py}, ve které uživatel opravuje slova s gramatickými chybami vygenerovaného souboru zpráv. Aplikace rovněž odstraňuje nečeská slova a věty, URL, emailové adresy a další nechtěné části textu.
+
+  Script \textit{setup.py} slouží k usnadnění práce a pouze po pořadě spouští všechny ostatní scripty.
+
+  \subsection{Metody nabízení textu}
+
+  \subsubsection{Doplňování pomocí trie}
+  Jednou z možností, jak slova uživateli nabízet je pomocí trie slov, která uživatel napsal.
+
+  Nejprve postavíme trii z námi získaných dat, do které přidáme každé slovo z uživatelových dat.
+
+  Po získání posledního slova\footnote{Např. regulárním výrazem.} textu, který chceme upravovat přetraverzujeme trii po písmenech tohoto slova\footnote{Metoda tedy funguje pouze na slova, jejichž části jsou v trii.}. Po přetraverzování získáme všechna slova tvořená zbytkem trie. Tato slova setřídíme podle četnosti jejich výskytu v trii a několik nejčetnějších nabídneme uživateli.
+
+  Metoda je implementována funkcí \textit{getPredictionsFromTrie()}.
+
+  \subsubsection{Opravy z možných úprav}
+  Pokud metoda doplňování pomocí trie nebyla aplikovatelná, protože se slovo v trii nevyskytovalo, další možná metoda je generování nejbližších obdob slova.
+
+  Má inspirace pro tuto metodu pochází ze skvělého článku \textit{\href{http://norvig.com/spell-correct.html}{How to Write a Spelling Corrector}}, který tuto metodu vysvětluje.
+
+  Princip je v tom, že se vygenerují všechna slova, která se liší od námi upravovaného slova několika\footnote{Pro náš případ právě jednu, pro více by byl náš program pomalý.} úpravami. Poté odebereme ta slova, která nejsou v námi vybudované trii a několik v trii nejčetnějších nabídneme uživateli.
+
+  Metoda je implementována funkcí \textit{getWordCorrections()}.
+
+  \subsubsection{Doporučení dalšího slova}
+  Pokud je slovo v trii a potřebujeme doporučit další po něm jdoucí, obě z výše uvedených metod jsou zbytečné.
+
+  Trii proto zkonstuujeme tak, abychom kromě slov v textu přidávali do trie i slova, která na slova ve větách přímo navazují. Uživateli poté doporučíme několik nejčetnějších slov, která na naše slovo bezprostředně navazují.
+
+  Dalším možným vylepšením by bylo "rozšířit kontext" a brát i slova, která bezprostředně navazují na n-tice slov. Náš model by byl přesnější ale pomalejší, trie by zabírala více paměti a na trénink by bylo potřeba znatelně více dat.
+
+  Metoda je implementována v rámci funkce \textit{textboxChanged()}.
+\end{document}
