@@ -25,7 +25,7 @@ email_regex = "[A-Za-z0-9._-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}"
 output_file = codecs.open("messages.txt", "w", encoding='utf8')
 
 # Take a walk through all subdirectories
-for path, dirs, files in os.walk('.'):
+for path, dirs, files in os.walk('messages/'):
     for input_file in files:
 
         # For all JSON files:
