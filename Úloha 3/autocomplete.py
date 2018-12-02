@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QLineEdit
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QLineEdit, QMessageBox
 from PyQt5.QtCore import Qt
 import re
 import codecs
@@ -22,27 +22,53 @@ class Autocomplete(QWidget):
             alignment = Qt.AlignCenter,
             styleSheet = 'color: grey')
 
+        self.fileNameTextbox = QLineEdit(self,
+            toolTip = "Input the absolute/relative path to the file to read the data from.")
+
+        self.fileNameButton = QPushButton(self,
+            text = "Generate model",
+            clicked = self.readFile,
+            toolTip = "Loads the data file to the autocomplete model.")
+
         # ROZLOŽENÍ OVLÁDACÍCH PRVKŮ
         self.layout = QVBoxLayout(self)
 
+        self.fileInputHLayout = QHBoxLayout(self)
+        self.fileInputHLayout.addWidget(self.fileNameTextbox)
+        self.fileInputHLayout.addWidget(self.fileNameButton)
+
         self.layout.addWidget(self.headingLabel)
+        self.layout.addLayout(self.fileInputHLayout)
         self.layout.addWidget(self.textbox)
         self.layout.addWidget(self.predictionLabel)
 
-        # Generates the trie from the messages.txt file
-        self.generateTrie()
+        # The number of recommendations to make
+        self.rNumber = 5
+        self.trieGenerated = False
+
+        # Show the layout
+        self.setLayout(self.layout)
+        self.show()
+
+
+    def readFile(self):
+        """Starts the trie generation from the specified input file."""
+        try:
+            self.generateTrie(self.fileNameTextbox.text())
+        except FileNotFoundError:
+            QMessageBox.about(self, "Error!", "File not found.")
+
+        self.fileNameTextbox.setReadOnly(True)
+        self.fileNameTextbox.clear()
+        self.fileNameButton.setEnabled(False)
 
         # Create an "allWords" set that includes all known words from the trie
         list = []
         self.getTrieWords(self.trie, "", list)
         self.allWords = set(word[0] for word in list)
 
-        # The number of recommendations to make
-        self.rNumber = 5
-
-        # Show the layout
-        self.setLayout(self.layout)
-        self.show()
+        # To signalize that we can start correcting
+        self.trieGenerated = True
 
 
     def trieWordValue(self, word):
@@ -63,11 +89,11 @@ class Autocomplete(QWidget):
             return None
 
 
-    def generateTrie(self):
+    def generateTrie(self, fileName):
         """Generates a trie from the dat/messages.txt file"""
         self.trie = {}
 
-        with codecs.open("dat/corrected_messages.txt", encoding="UTF-8") as f:
+        with codecs.open(fileName, encoding="UTF-8") as f:
             for sentence in f:
 
                 # Get each of the words of the sentence and iterate over them
@@ -124,8 +150,8 @@ class Autocomplete(QWidget):
 
     def textboxChanged(self, text):
         """Funkce volána s každou změnou textboxu."""
-        # If there textbox is empty, no predictions will be made
-        if len(text) == 0:
+        # If there textbox is empty or the model hasn't been generated
+        if len(text) == 0 or not self.trieGenerated:
             self.predictionLabel.setText("")
             return
 
