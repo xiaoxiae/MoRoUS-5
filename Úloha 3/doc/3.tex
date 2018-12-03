@@ -22,7 +22,7 @@
 
   Nevýhoda však vězí v tom, že zpočátku se jedná o systém velice hloupý a až při jeho dlouhodobějším používání se stává použitelný. Pokud tedy chceme vybudovat systém tak, aby byl použitelný okamžitě, musíme nejdříve získat uživatelem napsané věty.
 
-  V dnešní době drtivá většina z nás používá nějakou formu sociálních médií, což je pro náš případ velice vhodné. Naštěstí pro nás je získání těchto dat z většiny populárnějších služeb přímočaré, viz.:
+  V dnešní době drtivá většina z nás používá nějakou formu sociálních médií, což je pro náš případ velice vhodné. Naštěstí pro nás je získání těchto dat z většiny populárnějších služeb přímočaré:
   \begin{itemize}
     \item \textbf{Facebook:} Po přihlášení na Facebook je v \href{https://www.facebook.com/settings?tab=your_facebook_information}{Nastavení} pod záložkou \href{https://www.facebook.com/settings?tab=your_facebook_information}{Vaše informace na facebooku} možnost Stažení vašich informací.
     \item \textbf{Gmail:} Stačí navštívit \href{https://takeout.google.com/}{Google Takeout} a z produktů ke stažení vybrat Gmail.
@@ -68,4 +68,8 @@
   Dalším možným vylepšením by bylo "rozšířit kontext" a brát i slova, která bezprostředně navazují na n-tice slov. Náš model by byl přesnější na úkor rychlosti, paměti zabírané trií a množství potřebných dat.
 
   Metoda je implementována v rámci funkce \textit{textboxChanged()}.
+
+  \subsection{Závěr}
+  V repozitáři je přiložen soubor $sample\_messages.txt$, který je připraven ke zpracování výše popsaným modelem. Po spuštění aplikace $autocomplete.py$ stačí do horního textboxu zadat relativní (nebo absolutní) umístění tohoto souboru, stisknout Generate a poté psát do spodního textboxu věty, které má model doplňovat/upravovat.
+
 \end{document}

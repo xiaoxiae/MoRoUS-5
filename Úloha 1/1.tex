@@ -21,9 +21,11 @@
   \end{center}
 
   \subsection*{Úkol 1.2}
-  Řešením je z bodu $*$ (z konce) procházet skladiště tak, že nestoupíme mimo vyznačené body a při vstupu na každé pole s hodnotou senzoru $s$ zkontrolujeme, zda $|(t_d - p) - s| \le 5$ (kde $p$ je délka námi uražené cesty). Pokud dorazíme na začátek, cestou projdeme přes všechny senzory a navíc je délka námi uražené cesty rovna času, pak cestu vypíšeme.
+  Řešením je z bodu z konce procházet skladiště tak, že nestoupíme mimo vyznačené body a při vstupu na každé pole s hodnotou senzoru $s$ zkontrolujeme, zda $|(t_d - p_{len}) - s| \le 5$, kde $p_{len}$ je délka námi uražené cesty a $t_d$ čas, kdy byl robot chycen.
 
-  Řešení je implementováno v jazyce Python v souboru \textit{1.1.py}.
+  Pokud dorazíme na začátek, všechny senzory jsme cestou prošli a délka námi uražené cesty je rovna času chycení, pak cestu vypíšeme.
+
+  Řešení je implementováno v souboru \textit{1.1.py}.
 
   \subsection*{Úkol 1.3}
   Řešením tohoto problému jsou chodby mezi každými dvěma po sobě jdoucími souřadnicemi z následujících výčtů:
@@ -33,4 +35,16 @@
 
     $B3, C3, C2, D2, E2, E3, D3, D4, E4$
   \end{center}
+
+  \subsection*{Úkol 1.4}
+  Nejprve získáme a (vzestupně podle naměřeného času) setřídíme lokace všech senzorů.
+
+  Bludiště poté budeme od začátku procházet a hledat všechny platné\footnote{V tom smyslu, že nesíme přecházet přes senzory nebo jiné již nalezené cesty.} cesty mezi senzorem 1 a senzorem 2. Pokud najdeme platnou cestu takovou, že její délka odpovídá hodnotě senzoru na jejím konci, do bludiště zapíšeme hodnoty námi uražené cesty a pokusíme se najít cestu mezi senzory 2 a 3. Tento proces opakujeme pro všechny další dvojice vzestupně setřízených lokací senzorů.
+
+  Řešení je implementováno v souboru \textit{1.2.py}.
+
+  \subsection*{Úkol 1.5}
+  Pro tento úkol lze vyzkoušet dvojice senzorů podobně jako v řešení pro úkol 1.4 s tím rozdílem, že musíme zkoušet po sobě jdoucí dvojice ve všech různých platných setřízeních.
+
+  Platná setřízení poznáme tak, že se od sebe hodnoty senzorů bezprostředně u sebe neliší o více než 5.
 \end{document}
