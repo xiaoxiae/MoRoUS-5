@@ -26,7 +26,7 @@ class Autocomplete(QWidget):
             toolTip = "Input the absolute/relative path to the file to read the data from.")
 
         self.fileNameButton = QPushButton(self,
-            text = "Generate model",
+            text = "Generate",
             clicked = self.readFile,
             toolTip = "Loads the data file to the autocomplete model.")
 
@@ -57,6 +57,7 @@ class Autocomplete(QWidget):
             self.generateTrie(self.fileNameTextbox.text())
         except FileNotFoundError:
             QMessageBox.about(self, "Error!", "File not found.")
+            return
 
         self.fileNameTextbox.setReadOnly(True)
         self.fileNameTextbox.clear()
