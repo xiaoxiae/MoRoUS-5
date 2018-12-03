@@ -20,3 +20,4 @@ __pycache__/
 # Ignores both the exported .txt file and the raw JSON files
 **/dat/*.txt
 **/dat/messages/*
+**/other/*
