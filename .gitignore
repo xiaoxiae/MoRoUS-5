@@ -8,7 +8,6 @@
 *.synctex.gz
 *.bbl
 *.blg
-*.out
 
 ## Python Cache folders
 __pycache__/

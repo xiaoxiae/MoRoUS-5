@@ -4,7 +4,7 @@ def recursivepp(depth, u, u1, u2, stack):
     if depth == 0:
         # If the sum is 100 and the last command isn't M
         if u[u1] == 100 and stack[-1][0] != "M":
-            f = open("uloha2.1.txt", "a")
+            f = open("02-1.out", "a")
             f.write(str(len(stack))+": "+str(stack)+"\n")
         return
 

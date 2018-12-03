@@ -75,3 +75,4 @@ for sensor in sensors:
     board_mask[sensor[0]][sensor[1]] = sensor[2]
 
 board_exploration(board_mask, (sensors[0][0], sensors[0][1]), 1, sensors, 0)
+input("Done.")

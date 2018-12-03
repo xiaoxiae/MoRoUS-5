@@ -48,3 +48,5 @@ file_dir = os.path.dirname(os.path.realpath(__file__))
 # Read the contents of the file and run the code
 pp = open(os.path.join(file_dir, file_name)).read().splitlines()
 compute(pp)
+
+input("Done.")

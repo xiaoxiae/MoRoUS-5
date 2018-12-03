@@ -85,3 +85,4 @@ board_mask[end_coords[0]][end_coords[1]] = time
 
 # Explore the board (and print the valid paths)
 board_exploration(board, board_mask, time, end_coords, number_of_sensors)
+input("Done.")
