@@ -34,20 +34,22 @@ def create_board(path):
 
     return [time, board, start_coords, end_coords, number_of_sensors]
 
+
 def board_exploration(board, board_mask, depth, position, sensors):
-    """Recursively explore the board and print the valid paths."""
+    """Recursively explore the board and print the valid paths, where all of the
+    sensor data is known but might (or might not) be incorrect."""
     # If we managed to reach the start, time is 0 and we used all the sensors
     if sensors == 0 and board[position[0]][position[1]] == 'x' and depth == 0:
         print_board(board_mask, time)
         return
 
+    # Try to take steps in all directions
     steps = [(1, 0), (0, 1), (-1, 0), (0, -1)]
-    # Try to take steps in all of the directions
 
     for step in steps:
         x, y = position[0] + step[0], position[1] + step[1]
 
-        # If we are within bounds and there is sensor data and we haven't been there
+        # If we are within bounds, sensor data is known and we haven't been there
         if in_bounds(x, y, board) and board[x][y] != None and board_mask[x][y] == -1:
 
             # If it's either the start or we are within the error
@@ -63,15 +65,14 @@ def board_exploration(board, board_mask, depth, position, sensors):
 
                 board_mask[x][y] = -1
 
+
 # The path to the input file
-file_name = "01.in"
+file_name = input("Enter name of the file: ")
 file_dir = os.path.dirname(os.path.realpath(__file__))
 path = os.path.join(file_dir, file_name)
 
 # Get information about the input
 board_info = create_board(path)
-
-# Name the information
 time = board_info[0]
 board = board_info[1]
 start_coords = board_info[2]
